@@ -1,0 +1,13 @@
+package com.linkc.linkcbackend;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class LinkcBackendApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
