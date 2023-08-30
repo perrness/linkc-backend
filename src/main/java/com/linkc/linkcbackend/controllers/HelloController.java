@@ -1,19 +1,21 @@
 package com.linkc.linkcbackend.controllers;
 
-import com.linkc.linkcbackend.models.Greeting;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.linkc.linkcbackend.models.User;
+import com.linkc.linkcbackend.services.UserService;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 @RestController
 public class HelloController {
-    private static final String template = "Hello, %s!";
-    private final AtomicLong counter = new AtomicLong();
+    private final UserService userService;
 
-    @GetMapping("/greeting")
-    public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
-        return new Greeting(counter.incrementAndGet(), String.format(template, name));
+    public HelloController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @PostMapping("/add")
+    public void add(@RequestParam(value = "name", defaultValue = "World") String name) {
+        userService.saveUser(new User("1", name, "lol"));
     }
 }
