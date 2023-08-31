@@ -1,5 +1,6 @@
 package com.linkc.linkcbackend.controllers;
 
+import com.linkc.linkcbackend.models.Box;
 import com.linkc.linkcbackend.models.User;
 import com.linkc.linkcbackend.repository.UserRepository;
 import com.linkc.linkcbackend.services.UserService;

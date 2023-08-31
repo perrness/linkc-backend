@@ -16,6 +16,10 @@ public class User{
         @Indexed(unique = true)
         private String number;
 
+        public String getId() {
+                return id;
+        }
+
         public void setFirstName(String firstName) {
                 this.firstName = firstName;
         }
