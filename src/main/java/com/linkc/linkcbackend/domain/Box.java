@@ -1,4 +1,4 @@
-package com.linkc.linkcbackend.models;
+package com.linkc.linkcbackend.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

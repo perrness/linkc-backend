@@ -1,6 +1,6 @@
 package com.linkc.linkcbackend.repository;
 
-import com.linkc.linkcbackend.models.Box;
+import com.linkc.linkcbackend.domain.Box;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;

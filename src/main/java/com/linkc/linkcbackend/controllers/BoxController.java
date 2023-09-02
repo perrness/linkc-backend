@@ -1,7 +1,6 @@
 package com.linkc.linkcbackend.controllers;
 
-import com.linkc.linkcbackend.models.Box;
-import com.linkc.linkcbackend.models.User;
+import com.linkc.linkcbackend.domain.Box;
 import com.linkc.linkcbackend.repository.BoxRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

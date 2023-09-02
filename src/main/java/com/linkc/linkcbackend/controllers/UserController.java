@@ -1,7 +1,6 @@
 package com.linkc.linkcbackend.controllers;
 
-import com.linkc.linkcbackend.models.Box;
-import com.linkc.linkcbackend.models.User;
+import com.linkc.linkcbackend.domain.User;
 import com.linkc.linkcbackend.repository.UserRepository;
 import com.linkc.linkcbackend.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -30,6 +29,17 @@ public class UserController {
     @GetMapping("/user/{id}")
     public ResponseEntity<?> getUser(@PathVariable String id) {
         Optional<User> user = userRepository.findById(id);
+
+        if(user.isEmpty()) {
+            return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/email/{id}")
+    public ResponseEntity<?> getEmail(@PathVariable String id) {
+        Optional<User> user = userRepository.findByEmail(id);
 
         if(user.isEmpty()) {
             return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
