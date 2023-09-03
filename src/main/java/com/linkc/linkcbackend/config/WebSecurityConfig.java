@@ -28,25 +28,17 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        WebSecurity webSecurity = new WebSecurity();
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/user/{userId}").access((authentication, context) -> new AuthorizationDecision(webSecurity.checkUserId(authentication.get(), context.getRequest())))
-                        .anyRequest().authenticated())
+                        .requestMatchers("/api/v1/user").authenticated()
+                        .anyRequest().denyAll())
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    public static class WebSecurity {
-        public boolean checkUserId(Authentication authentication, HttpServletRequest request) {
-            User user = (User)authentication.getPrincipal();
-            return request.getServletPath().endsWith(user.getId()) && authentication.isAuthenticated();
-        }
     }
 }

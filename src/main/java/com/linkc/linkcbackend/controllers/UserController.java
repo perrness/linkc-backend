@@ -5,11 +5,14 @@ import com.linkc.linkcbackend.repository.UserRepository;
 import com.linkc.linkcbackend.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/v1/user")
 public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
@@ -26,11 +29,14 @@ public class UserController {
         return new ResponseEntity<>("OK", HttpStatus.CREATED);
     }
 
-    @GetMapping("/user/{id}")
-    public ResponseEntity<?> getUser(@PathVariable String id) {
-        Optional<User> user = userRepository.findById(id);
+    @GetMapping("")
+    public ResponseEntity<?> getUser(Authentication authentication) {
+        User authenticated_user = (User)authentication.getPrincipal();
+        System.out.println(authenticated_user.getFirstName());
 
-        if(user.isEmpty()) {
+        Optional<User> user = userRepository.findById(authenticated_user.getId());
+
+        if (user.isEmpty()) {
             return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(user.get(), HttpStatus.OK);
