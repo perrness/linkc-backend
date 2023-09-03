@@ -1,6 +1,7 @@
 package com.linkc.linkcbackend.controllers;
 
 import com.linkc.linkcbackend.domain.User;
+import com.linkc.linkcbackend.domain.UserData;
 import com.linkc.linkcbackend.repository.UserRepository;
 import com.linkc.linkcbackend.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,13 @@ public class UserController {
         if (user.isEmpty()) {
             return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(user.get(), HttpStatus.OK);
+            UserData userData = new UserData.builder()
+                    .firstname(user.get().getFirstname())
+                    .lastname(user.get().getLastname())
+                    .email(user.get().getEmail())
+                    .number(user.get().getNumber())
+                    .build();
+            return new ResponseEntity<>(userData, HttpStatus.OK);
         }
     }
 }
