@@ -51,4 +51,6 @@ jobs:
           containerAppName: linkc-backend
           resourceGroup: linkc-rg
           imageToDeploy: perrness/perrness:${{ github.sha }}
+          registryUsername: ${{ secrets.DOCKERHUB_USERNAME }}
+          registryPassword: ${{ secrets.AZURE_CONTAINER_APP_DOCKER_PULL_TOKEN }}
 
