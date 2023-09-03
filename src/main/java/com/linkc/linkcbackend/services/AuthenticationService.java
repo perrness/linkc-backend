@@ -2,9 +2,12 @@ package com.linkc.linkcbackend.services;
 
 import com.linkc.linkcbackend.domain.*;
 import com.linkc.linkcbackend.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -49,5 +52,14 @@ public class AuthenticationService {
         return new AuthenticationResponse.AuthenticationResponseBuilder()
                 .token(jwtToken)
                 .build();
+    }
+
+    public void changePassword(User user, String oldPassword, String newPassword) throws Exception {
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new Exception("Old password does not match existing password.");
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+
+        userRepository.save(user);
     }
 }
