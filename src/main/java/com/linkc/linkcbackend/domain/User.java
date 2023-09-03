@@ -14,8 +14,8 @@ import java.util.List;
 public class User implements UserDetails {
         @Id
         private String id;
-        private String firstName;
-        private String lastName;
+        private String firstname;
+        private String lastname;
         private String password;
         @Indexed(unique = true)
         private String email;
@@ -26,8 +26,8 @@ public class User implements UserDetails {
         private User() {}
 
         private User(UserBuilder userBuilder) {
-                this.firstName = userBuilder.firstName;
-                this.lastName = userBuilder.lastName;
+                this.firstname = userBuilder.firstname;
+                this.lastname = userBuilder.lastname;
                 this.password = userBuilder.password;
                 this.email = userBuilder.email;
                 this.number = userBuilder.number;
@@ -73,12 +73,12 @@ public class User implements UserDetails {
                 return true;
         }
 
-        public void setFirstName(String firstName) {
-                this.firstName = firstName;
+        public void setFirstname(String firstname) {
+                this.firstname = firstname;
         }
 
-        public void setLastName(String lastName) {
-                this.lastName = lastName;
+        public void setLastname(String lastname) {
+                this.lastname = lastname;
         }
 
         public void setPassword(String password) {
@@ -93,12 +93,12 @@ public class User implements UserDetails {
                 this.number = number;
         }
 
-        public String getFirstName() {
-                return firstName;
+        public String getFirstname() {
+                return firstname;
         }
 
-        public String getLastName() {
-                return lastName;
+        public String getLastname() {
+                return lastname;
         }
 
         public String getEmail() {
@@ -110,20 +110,20 @@ public class User implements UserDetails {
         }
 
         public static class UserBuilder {
-            private String firstName;
-            private String lastName;
+            private String firstname;
+            private String lastname;
             private String password;
             private String email;
             private String number;
             private Role role;
 
             public UserBuilder firstname(String firstName) {
-                    this.firstName = firstName;
+                    this.firstname = firstName;
                     return this;
             }
 
             public UserBuilder lastname(String lastName) {
-                    this.lastName = lastName;
+                    this.lastname = lastName;
                     return this;
             }
 
