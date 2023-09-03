@@ -1,29 +1,27 @@
 package com.linkc.linkcbackend.controllers;
 
 import com.linkc.linkcbackend.domain.Box;
+import com.linkc.linkcbackend.domain.User;
 import com.linkc.linkcbackend.repository.BoxRepository;
+import com.linkc.linkcbackend.services.BoxService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/v1/box")
 public class BoxController {
-    private final BoxRepository boxRepository;
+    private final BoxService boxService;
 
-    public BoxController(BoxRepository boxRepository) {
-        this.boxRepository = boxRepository;
+    public BoxController(BoxService boxService) {
+        this.boxService = boxService;
     }
 
+    @GetMapping("")
+    public ResponseEntity<?> getBoxesReservedByUser(Authentication authentication) {
+        User user = (User)authentication.getPrincipal();
 
-    @PostMapping("/box")
-    public ResponseEntity<?> addBox(@RequestBody Box box) {
-        boxRepository.save(box);
-
-        return new ResponseEntity<>("OK", HttpStatus.CREATED);
-    }
-
-    @GetMapping("/box/{id}")
-    public ResponseEntity<?> getBoxesReservedByUser(@PathVariable String id) {
-        return new ResponseEntity<>(boxRepository.findBoxReservedByUserId(id), HttpStatus.OK);
+        return new ResponseEntity<>(boxService.getBoxes(user.getId()), HttpStatus.OK);
     }
 }

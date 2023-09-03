@@ -11,4 +11,7 @@ import java.util.List;
 public interface BoxRepository extends MongoRepository<Box, String> {
     @Query("{reservedBy:'?0'}")
     List<Box> findBoxReservedByUserId(String id);
+
+    @Query("{reservedFor:'?0'}")
+    List<Box> findBoxReservedForUserId(String id);
 }
