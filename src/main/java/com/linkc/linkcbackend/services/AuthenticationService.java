@@ -58,13 +58,4 @@ public class AuthenticationService {
             throw new Exception("User not found");
         }
     }
-
-    public void changePassword(User user, String oldPassword, String newPassword) throws Exception {
-        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
-            throw new Exception("Old password does not match existing password.");
-        }
-        user.setPassword(passwordEncoder.encode(newPassword));
-
-        userRepository.save(user);
-    }
 }

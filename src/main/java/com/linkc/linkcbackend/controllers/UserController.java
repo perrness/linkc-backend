@@ -1,27 +1,27 @@
 package com.linkc.linkcbackend.controllers;
 
-import com.linkc.linkcbackend.domain.ChangePasswordRequest;
 import com.linkc.linkcbackend.domain.Response;
 import com.linkc.linkcbackend.domain.User;
 import com.linkc.linkcbackend.domain.UserData;
 import com.linkc.linkcbackend.repository.UserRepository;
-import com.linkc.linkcbackend.services.AuthenticationService;
+import com.linkc.linkcbackend.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
     private final UserRepository userRepository;
-    private final AuthenticationService authenticationService;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository, AuthenticationService authenticationService) {
+    public UserController(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
-        this.authenticationService = authenticationService;
+        this.userService = userService;
     }
 
     @GetMapping("")
@@ -43,21 +43,21 @@ public class UserController {
         }
     }
 
-    @PutMapping("/password")
-    public ResponseEntity<?> updateUser(Authentication authentication, @RequestBody ChangePasswordRequest changePasswordRequest) {
+    @PatchMapping("")
+    public ResponseEntity<?> updateUser(Authentication authentication, @RequestBody Map<String, Object> updates) {
         User authenticated_user = (User)authentication.getPrincipal();
 
         Optional<User> user = userRepository.findById(authenticated_user.getId());
 
         if (user.isEmpty()) {
-            return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Response("User not found"), HttpStatus.NOT_FOUND);
         } else {
             try {
-                authenticationService.changePassword(user.get(), changePasswordRequest.getOldPassword(), changePasswordRequest.getNewPassword());
+                userService.updateUser(user.get(), updates);
             } catch (Exception exception) {
                 return new ResponseEntity<>(new Response(exception.getMessage()), HttpStatus.UNAUTHORIZED);
             }
-            return new ResponseEntity<>(new Response("Password changed"), HttpStatus.OK);
+            return new ResponseEntity<>(new Response("User updated."), HttpStatus.OK);
         }
     }
 }
