@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AuthenticationService {
     private final UserRepository userRepository;
@@ -42,16 +44,19 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        // TODO fix proper error handling
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
-        String jwtToken = jwtService.generateToken(user);
+    public AuthenticationResponse authenticate(AuthenticationRequest request) throws Exception{
+        Optional<User> user = userRepository.findByEmail(request.getEmail());
 
-        return new AuthenticationResponse.AuthenticationResponseBuilder()
-                .token(jwtToken)
-                .build();
+        if (user.isPresent()) {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+            String jwtToken = jwtService.generateToken(user.get());
+
+            return new AuthenticationResponse.AuthenticationResponseBuilder()
+                    .token(jwtToken)
+                    .build();
+        } else {
+            throw new Exception("User not found");
+        }
     }
 
     public void changePassword(User user, String oldPassword, String newPassword) throws Exception {

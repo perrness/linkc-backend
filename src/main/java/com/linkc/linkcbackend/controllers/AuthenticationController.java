@@ -7,6 +7,7 @@ import com.linkc.linkcbackend.domain.Response;
 import com.linkc.linkcbackend.services.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,7 +42,15 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
+        try {
+            return ResponseEntity.ok(authenticationService.authenticate(request));
+        } catch (Exception exception) {
+            if (exception.getMessage().contains("User not found")) {
+                return new ResponseEntity<>(new Response(exception.getMessage()), HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(new Response(exception.getMessage()), HttpStatus.UNAUTHORIZED);
+            }
+        }
     }
 }
