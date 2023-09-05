@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -35,12 +36,18 @@ public class UserService {
             user.setLastname((String) updates.get("lastname"));
         }
 
-        if (updates.containsKey("email")) {
-            user.setEmail((String) updates.get("email"));
+        if (updates.containsKey("old_email") && updates.containsKey("new_email")) {
+            if (!Objects.equals(updates.get("old_email"), user.getEmail())) {
+                throw new Exception("Old email does not match existing email");
+            }
+            user.setEmail((String) updates.get("new_email"));
         }
 
-        if (updates.containsKey("number")) {
-            user.setNumber((String) updates.get("number"));
+        if (updates.containsKey("old_number") && updates.containsKey("new_number")) {
+            if (!Objects.equals(updates.get("old_number"), user.getNumber())) {
+                throw new Exception("Old number does not match existing number");
+            }
+            user.setNumber((String) updates.get("new_number"));
         }
 
         userRepository.save(user);
