@@ -21,7 +21,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final AzureBlobService azureBlobService;
 
-    @Value("linkc.defaultprofilepicture")
+    @Value("${linkc.defaultprofilepicture}")
     private String defaultProfilePictureUri;
 
     public AuthenticationService(
