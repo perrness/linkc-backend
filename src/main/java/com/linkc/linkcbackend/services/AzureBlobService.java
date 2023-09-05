@@ -14,19 +14,15 @@ import java.util.Base64;
 
 @Service
 public class AzureBlobService {
-    @Value("{azure.storage.connectionstring}")
-    private String azureConnectionString;
-    @Value("${azure.storage.containername}")
-    private String azureContainerName;
     private BlobServiceClient blobServiceClient;
     private BlobContainerClient blobContainerClient;
 
     public AzureBlobService() {
         blobServiceClient = new BlobServiceClientBuilder()
-                .connectionString(azureConnectionString)
+                .connectionString(System.getenv("AZURE_STORAGE_CONNECTION_STRING"))
                 .buildClient();
 
-        blobContainerClient = blobServiceClient.getBlobContainerClient(azureContainerName);
+        blobContainerClient = blobServiceClient.getBlobContainerClient(System.getenv("AZURE_CONTAINER_NAME"));
     }
 
     public String uploadImageToBlob(String encodedImage) throws Exception{
