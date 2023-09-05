@@ -2,6 +2,8 @@ package com.linkc.linkcbackend.domain;
 
 import jakarta.validation.constraints.NotEmpty;
 
+import java.util.Base64;
+
 public class RegisterRequest {
     @NotEmpty(message = "firstname can't be blank")
     private String firstname;
@@ -13,6 +15,7 @@ public class RegisterRequest {
     private String email;
     @NotEmpty(message = "email can't be blank")
     private String number;
+    private String profilePictureEncodedBase64;
 
     public String getFirstname() {
         return firstname;
@@ -52,5 +55,13 @@ public class RegisterRequest {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getProfilePictureEncodedBase64() {
+        return profilePictureEncodedBase64;
+    }
+
+    public void setProfilePictureEncodedBase64(String profilePictureEncodedBase64) {
+        this.profilePictureEncodedBase64 = profilePictureEncodedBase64;
     }
 }

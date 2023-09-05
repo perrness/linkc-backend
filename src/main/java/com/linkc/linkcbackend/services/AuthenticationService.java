@@ -3,6 +3,7 @@ package com.linkc.linkcbackend.services;
 import com.linkc.linkcbackend.domain.*;
 import com.linkc.linkcbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,15 +19,26 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final AzureBlobService azureBlobService;
 
-    public AuthenticationService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager) {
+    @Value("linkc.defaultprofilepicture")
+    private String defaultProfilePictureUri;
+
+    public AuthenticationService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService,
+            AuthenticationManager authenticationManager,
+            AzureBlobService azureBlobService
+    ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.azureBlobService = azureBlobService;
     }
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponse register(RegisterRequest request) throws Exception {
         User user = new User.UserBuilder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -35,6 +47,13 @@ public class AuthenticationService {
                 .number(request.getNumber())
                 .role(Role.USER)
                 .build();
+
+        if(request.getProfilePictureEncodedBase64() == null) {
+            user.setProfilePictureUri(defaultProfilePictureUri);
+        } else {
+            String profilePictureUrl = azureBlobService.uploadImageToBlob(request.getProfilePictureEncodedBase64());
+            user.setProfilePictureUri(profilePictureUrl);
+        }
 
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);

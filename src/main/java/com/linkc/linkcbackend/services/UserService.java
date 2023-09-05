@@ -2,7 +2,6 @@ package com.linkc.linkcbackend.services;
 
 import com.linkc.linkcbackend.domain.User;
 import com.linkc.linkcbackend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +50,10 @@ public class UserService {
         }
 
         userRepository.save(user);
+    }
+
+    public String uploadProfilePicture(String imageEncoded) throws Exception{
+        return "lol";
     }
 
     private String changePassword(User user, String oldPassword, String newPassword) throws Exception {

@@ -38,6 +38,7 @@ public class UserController {
                     .lastname(user.get().getLastname())
                     .email(user.get().getEmail())
                     .number(user.get().getNumber())
+                    .profilePictureUri(user.get().getProfilePictureUri())
                     .build();
             return new ResponseEntity<>(userData, HttpStatus.OK);
         }

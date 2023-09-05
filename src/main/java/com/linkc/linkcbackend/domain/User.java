@@ -21,6 +21,7 @@ public class User implements UserDetails {
         private String email;
         @Indexed(unique = true)
         private String number;
+        private String profilePictureUri;
         private Role role;
 
         private User() {}
@@ -31,6 +32,7 @@ public class User implements UserDetails {
                 this.password = userBuilder.password;
                 this.email = userBuilder.email;
                 this.number = userBuilder.number;
+                this.profilePictureUri = userBuilder.profilePictureUri;
                 this.role = userBuilder.role;
         }
 
@@ -109,12 +111,21 @@ public class User implements UserDetails {
                 return number;
         }
 
+        public String getProfilePictureUri() {
+                return profilePictureUri;
+        }
+
+        public void setProfilePictureUri(String profilePictureUri) {
+                this.profilePictureUri = profilePictureUri;
+        }
+
         public static class UserBuilder {
             private String firstname;
             private String lastname;
             private String password;
             private String email;
             private String number;
+            private String profilePictureUri;
             private Role role;
 
             public UserBuilder firstname(String firstName) {
@@ -139,6 +150,11 @@ public class User implements UserDetails {
 
             public UserBuilder number(String number) {
                     this.number = number;
+                    return this;
+            }
+
+            public UserBuilder profilePictureUri(String profilePictureUri) {
+                    this.profilePictureUri = profilePictureUri;
                     return this;
             }
 
