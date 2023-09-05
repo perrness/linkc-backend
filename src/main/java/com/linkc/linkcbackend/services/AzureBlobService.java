@@ -5,11 +5,15 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.models.BlobHttpHeaders;
-import org.springframework.beans.factory.annotation.Value;
+import org.imgscalr.Scalr;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Base64;
 
 @Service
@@ -30,7 +34,7 @@ public class AzureBlobService {
         String fileName = java.util.UUID.randomUUID() + "." + fileExtension;
         BlobClient blobClient = blobContainerClient.getBlobClient(fileName);
 
-        byte[] bytes = Base64.getDecoder().decode(encodedImage);
+        byte[] bytes = createThumbnail(encodedImage, fileExtension,640).toByteArray();
         try (ByteArrayInputStream dataStream = new ByteArrayInputStream(bytes)) {
             blobClient.upload(dataStream);
         } catch (IOException ex) {
@@ -39,6 +43,19 @@ public class AzureBlobService {
 
         blobClient.setHttpHeaders(new BlobHttpHeaders().setContentType("image/" + fileExtension));
         return blobClient.getBlobUrl();
+    }
+
+    private ByteArrayOutputStream createThumbnail(String encodedImage,String fileExtension, Integer width) throws IOException{
+        ByteArrayOutputStream thumbOutput = new ByteArrayOutputStream();
+
+        InputStream inputStream = new ByteArrayInputStream(Base64.getDecoder().decode(encodedImage));
+
+        BufferedImage thumbImg = null;
+        BufferedImage img = ImageIO.read(inputStream);
+        thumbImg = Scalr.resize(img, Scalr.Method.AUTOMATIC, Scalr.Mode.AUTOMATIC, width, Scalr.OP_ANTIALIAS);
+        ImageIO.write(thumbImg, fileExtension , thumbOutput);
+
+        return thumbOutput;
     }
 
     private String getImageFileExtension(String encodedImage) throws Exception{
