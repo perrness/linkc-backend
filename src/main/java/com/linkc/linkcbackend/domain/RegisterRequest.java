@@ -1,5 +1,6 @@
 package com.linkc.linkcbackend.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 
 import java.util.Base64;
@@ -15,6 +16,7 @@ public class RegisterRequest {
     private String email;
     @NotEmpty(message = "email can't be blank")
     private String number;
+    @JsonProperty("profile_picture_encoded_base64")
     private String profilePictureEncodedBase64;
 
     public String getFirstname() {
