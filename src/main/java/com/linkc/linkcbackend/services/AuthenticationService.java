@@ -45,11 +45,11 @@ public class AuthenticationService {
                 .role(Role.USER)
                 .build();
 
-        if(request.getProfilePictureEncodedBase64() == null) {
-            user.setProfilePictureUri(defaultProfilePictureUri);
-        } else {
+        try {
             String profilePictureUrl = azureBlobService.uploadImageToBlob(request.getProfilePictureEncodedBase64());
             user.setProfilePictureUri(profilePictureUrl);
+        } catch (Exception exception) {
+            user.setProfilePictureUri(defaultProfilePictureUri);
         }
 
         userRepository.save(user);

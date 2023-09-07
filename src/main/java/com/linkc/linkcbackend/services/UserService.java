@@ -12,10 +12,12 @@ import java.util.Objects;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AzureBlobService azureBlobService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AzureBlobService azureBlobService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.azureBlobService = azureBlobService;
     }
 
     public void saveUser(User user) {
@@ -47,6 +49,11 @@ public class UserService {
                 throw new Exception("Old number does not match existing number");
             }
             user.setNumber((String) updates.get("new_number"));
+        }
+
+        if (updates.containsKey("profile_picture_encoded_base64")) {
+            String imgUri = azureBlobService.uploadImageToBlob((String) updates.get("profile_picture_encoded_base64"));
+            user.setProfilePictureUri(imgUri);
         }
 
         userRepository.save(user);
