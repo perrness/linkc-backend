@@ -8,6 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -42,7 +44,7 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .number(request.getNumber())
-                .role(Role.USER)
+                .role(request.getRole())
                 .build();
 
         try {
@@ -53,6 +55,7 @@ public class AuthenticationService {
         }
 
         userRepository.save(user);
+
         var jwtToken = jwtService.generateToken(user);
 
         return new AuthenticationResponse.AuthenticationResponseBuilder()
@@ -65,6 +68,7 @@ public class AuthenticationService {
 
         if (user.isPresent()) {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+
             String jwtToken = jwtService.generateToken(user.get());
 
             return new AuthenticationResponse.AuthenticationResponseBuilder()
