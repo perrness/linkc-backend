@@ -52,15 +52,12 @@ public class UserService {
         }
 
         if (updates.containsKey("profile_picture_encoded_base64")) {
-            String imgUri = azureBlobService.uploadImageToBlob((String) updates.get("profile_picture_encoded_base64"));
-            user.setProfilePictureUri(imgUri);
+            azureBlobService.deleteImageInContainer(user.getProfilePictureUri());
+            String filename = azureBlobService.uploadImageToBlob((String) updates.get("profile_picture_encoded_base64"));
+            user.setProfilePictureUri(filename);
         }
 
         userRepository.save(user);
-    }
-
-    public String uploadProfilePicture(String imageEncoded) throws Exception{
-        return "lol";
     }
 
     private String changePassword(User user, String oldPassword, String newPassword) throws Exception {

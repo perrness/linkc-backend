@@ -45,6 +45,14 @@ public class AzureBlobService {
         return blobClient.getBlobUrl();
     }
 
+    public void deleteImageInContainer(String imageUri) {
+        String baseUri = System.getenv("LINKC_PROFILEPIC_BASE_URI");
+        String empty = "";
+        String fileName = imageUri.replace(baseUri, empty);
+        BlobClient blobClient = blobContainerClient.getBlobClient(fileName);
+        blobClient.delete();
+    }
+
     private ByteArrayOutputStream createThumbnail(String encodedImage,String fileExtension, Integer width) throws IOException{
         ByteArrayOutputStream thumbOutput = new ByteArrayOutputStream();
 
