@@ -1,7 +1,9 @@
 package com.linkc.linkcbackend.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserData {
     private String firstname;
     private String lastname;
@@ -9,13 +11,17 @@ public class UserData {
     private String email;
     @JsonProperty("profile_picture_uri")
     private String profilePictureUri;
+    private String id;
+    private Role role;
 
-    public UserData(builder builder) {
+    public UserData(Builder builder) {
         this.firstname = builder.firstname;
         this.lastname = builder.lastname;
         this.email = builder.email;
         this.number = builder.number;
         this.profilePictureUri = builder.profilePictureUri;
+        this.id = builder.id;
+        this.role = builder.role;
     }
 
     public String getFirstname() {
@@ -58,35 +64,63 @@ public class UserData {
         this.profilePictureUri = profilePictureUri;
     }
 
-    public static class builder {
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public static class Builder {
         private String firstname;
         private String lastname;
         private String email;
         private String number;
         private String profilePictureUri;
+        private String id;
+        private Role role;
 
-        public builder firstname(String firstname) {
+        public Builder firstname(String firstname) {
             this.firstname = firstname;
             return this;
         }
 
-        public builder lastname(String lastname) {
+        public Builder lastname(String lastname) {
             this.lastname = lastname;
             return this;
         }
 
-        public builder email(String email) {
+        public Builder email(String email) {
             this.email = email;
             return this;
         }
 
-        public builder number(String number) {
+        public Builder number(String number) {
             this.number = number;
             return this;
         }
 
-        public builder profilePictureUri(String profilePictureUri) {
+        public Builder profilePictureUri(String profilePictureUri) {
             this.profilePictureUri = profilePictureUri;
+            return this;
+        }
+
+        public Builder role(Role role) {
+            this.role = role;
+            return this;
+        }
+
+        public Builder id(String id) {
+            this.id = id;
             return this;
         }
 

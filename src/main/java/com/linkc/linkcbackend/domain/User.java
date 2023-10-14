@@ -119,6 +119,10 @@ public class User implements UserDetails {
                 this.profilePictureUri = profilePictureUri;
         }
 
+        public Role getRole() {
+                return role;
+        }
+
         public static class UserBuilder {
             private String firstname;
             private String lastname;

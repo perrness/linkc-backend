@@ -30,22 +30,24 @@ public class AdminController {
     @GetMapping("/users")
     public ResponseEntity<?> getUser(Authentication authentication) {
         List<User> users = userRepository.findAll();
-        List<UserData> userData = new ArrayList<>();
+        List<UserData> userDataList = new ArrayList<>();
 
         users.forEach(user -> {
-            userData.add(new UserData.builder()
-                    .email(user.getEmail())
+            userDataList.add(new UserData.Builder()
                     .firstname(user.getFirstname())
                     .lastname(user.getLastname())
                     .number(user.getNumber())
+                    .email(user.getEmail())
                     .profilePictureUri(user.getProfilePictureUri())
+                    .id(user.getId())
+                    .role(user.getRole())
                     .build());
         });
 
         if (users.isEmpty()) {
             return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(userData, HttpStatus.OK);
+            return new ResponseEntity<>(userDataList, HttpStatus.OK);
         }
     }
     @PostMapping("/users")

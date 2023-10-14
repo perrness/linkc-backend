@@ -33,7 +33,7 @@ public class UserController {
         if (user.isEmpty()) {
             return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
         } else {
-            UserData userData = new UserData.builder()
+            UserData userData = new UserData.Builder()
                     .firstname(user.get().getFirstname())
                     .lastname(user.get().getLastname())
                     .email(user.get().getEmail())

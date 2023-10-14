@@ -50,7 +50,7 @@ public class AuthenticationService {
     public UserData adminRegister(AdminRegisterRequest request) throws Exception {
         User user = addUser(request, request.getRole());
 
-        return new UserData.builder()
+        return new UserData.Builder()
                 .email(user.getEmail())
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
