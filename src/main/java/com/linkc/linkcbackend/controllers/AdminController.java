@@ -1,14 +1,15 @@
 package com.linkc.linkcbackend.controllers;
 
-import com.linkc.linkcbackend.domain.User;
-import com.linkc.linkcbackend.domain.UserData;
+import com.linkc.linkcbackend.domain.*;
 import com.linkc.linkcbackend.repository.UserRepository;
+import com.linkc.linkcbackend.services.AuthenticationService;
+import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +17,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/admin")
 public class AdminController {
-    private final UserRepository userRepository;
+    Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
-    public AdminController(UserRepository userRepository) {
+    private final UserRepository userRepository;
+    private final AuthenticationService authenticationService;
+
+    public AdminController(UserRepository userRepository, AuthenticationService authenticationService) {
         this.userRepository = userRepository;
+        this.authenticationService = authenticationService;
     }
 
     @GetMapping("/users")
@@ -41,6 +46,21 @@ public class AdminController {
             return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(userData, HttpStatus.OK);
+        }
+    }
+    @PostMapping("/users")
+    public ResponseEntity<?> register(@Valid @RequestBody AdminRegisterRequest request) {
+        logger.info("Admin register new account");
+
+        try {
+            UserData user = authenticationService.adminRegister(request);
+            return new ResponseEntity<>(user, HttpStatus.CREATED);
+        } catch (Exception exception) {
+            logger.error("Register failed with: {}", exception.getMessage());
+            if (exception.getMessage().contains("E11000 duplicate key error collection: linkc.users. Failed _id or unique index constraint.")) {
+                return ResponseEntity.badRequest().body(new Response("Email or number already in use."));
+            }
+            return ResponseEntity.internalServerError().body("Something failed during registration");
         }
     }
 }

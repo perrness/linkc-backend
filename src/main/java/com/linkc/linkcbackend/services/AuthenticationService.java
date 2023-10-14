@@ -38,13 +38,35 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse register(RegisterRequest request) throws Exception {
+        User user = addUser(request, Role.ROLE_USER);
+
+        var jwtToken = jwtService.generateToken(user);
+
+        return new AuthenticationResponse.AuthenticationResponseBuilder()
+                .token(jwtToken)
+                .build();
+    }
+
+    public UserData adminRegister(AdminRegisterRequest request) throws Exception {
+        User user = addUser(request, request.getRole());
+
+        return new UserData.builder()
+                .email(user.getEmail())
+                .firstname(user.getFirstname())
+                .lastname(user.getLastname())
+                .profilePictureUri(user.getProfilePictureUri())
+                .number(user.getNumber())
+                .build();
+    }
+
+    private User addUser(RegisterRequest request, Role role) {
         User user = new User.UserBuilder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .number(request.getNumber())
-                .role(request.getRole())
+                .role(role)
                 .build();
 
         try {
@@ -56,11 +78,7 @@ public class AuthenticationService {
 
         userRepository.save(user);
 
-        var jwtToken = jwtService.generateToken(user);
-
-        return new AuthenticationResponse.AuthenticationResponseBuilder()
-                .token(jwtToken)
-                .build();
+        return user;
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) throws Exception{

@@ -16,7 +16,6 @@ public class RegisterRequest {
     private String number;
     @JsonProperty("profile_picture_encoded_base64")
     private String profilePictureEncodedBase64;
-    private Role role = Role.ROLE_USER;
 
     public String getFirstname() {
         return firstname;
@@ -65,12 +64,5 @@ public class RegisterRequest {
     public void setProfilePictureEncodedBase64(String profilePictureEncodedBase64) {
         this.profilePictureEncodedBase64 = profilePictureEncodedBase64;
     }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 }
+
