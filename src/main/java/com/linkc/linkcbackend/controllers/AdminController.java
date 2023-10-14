@@ -3,6 +3,7 @@ package com.linkc.linkcbackend.controllers;
 import com.linkc.linkcbackend.domain.*;
 import com.linkc.linkcbackend.repository.UserRepository;
 import com.linkc.linkcbackend.services.AuthenticationService;
+import com.linkc.linkcbackend.services.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -22,14 +24,16 @@ public class AdminController {
 
     private final UserRepository userRepository;
     private final AuthenticationService authenticationService;
+    private final UserService userService;
 
-    public AdminController(UserRepository userRepository, AuthenticationService authenticationService) {
+    public AdminController(UserRepository userRepository, AuthenticationService authenticationService, UserService userService) {
         this.userRepository = userRepository;
         this.authenticationService = authenticationService;
+        this.userService = userService;
     }
 
     @GetMapping("/users")
-    public ResponseEntity<?> getUser(Authentication authentication) {
+    public ResponseEntity<?> getUser() {
         List<User> users = userRepository.findAll();
         List<UserData> userDataList = new ArrayList<>();
 
@@ -65,6 +69,23 @@ public class AdminController {
                 return ResponseEntity.badRequest().body(new Response("Email or number already in use."));
             }
             return ResponseEntity.internalServerError().body("Something failed during registration");
+        }
+    }
+
+    @PatchMapping("/users/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody Map<String, Object> updates) {
+        logger.info("Admin patching user " + id);
+        Optional<User> user = userRepository.findById(id);
+
+        if (user.isEmpty()) {
+            return new ResponseEntity<>(new Response("User not found"), HttpStatus.NOT_FOUND);
+        } else {
+            try {
+                userService.updateUser(user.get(), updates);
+            } catch (Exception exception) {
+                return new ResponseEntity<>(new Response(exception.getMessage()), HttpStatus.UNAUTHORIZED);
+            }
+            return new ResponseEntity<>(new Response("User updated."), HttpStatus.OK);
         }
     }
 
