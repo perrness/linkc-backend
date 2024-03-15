@@ -17,9 +17,7 @@ public class User implements UserDetails {
         private String firstname;
         private String lastname;
         private String password;
-        @Indexed(unique = true)
         private String email;
-        @Indexed(unique = true)
         private String number;
         private String profilePictureUri;
         private Role role;

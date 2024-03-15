@@ -17,6 +17,7 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final ParqioService parqioService;
     private final AuthenticationManager authenticationManager;
     private final AzureBlobService azureBlobService;
 
@@ -27,12 +28,14 @@ public class AuthenticationService {
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             JwtService jwtService,
+            ParqioService parqioService,
             AuthenticationManager authenticationManager,
             AzureBlobService azureBlobService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.parqioService = parqioService;
         this.authenticationManager = authenticationManager;
         this.azureBlobService = azureBlobService;
     }
@@ -41,6 +44,7 @@ public class AuthenticationService {
         User user = addUser(request, Role.ROLE_USER);
 
         var jwtToken = jwtService.generateToken(user);
+        parqioService.sendSmsCode(user.getNumber());
 
         return new AuthenticationResponse.AuthenticationResponseBuilder()
                 .token(jwtToken)
