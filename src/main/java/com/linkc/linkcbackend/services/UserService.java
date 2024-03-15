@@ -13,11 +13,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AzureBlobService azureBlobService;
+    private final ParqioService parqioService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AzureBlobService azureBlobService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AzureBlobService azureBlobService, ParqioService parqioService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.azureBlobService = azureBlobService;
+        this.parqioService = parqioService;
     }
 
     public void saveUser(User user) {
@@ -55,6 +57,11 @@ public class UserService {
             azureBlobService.deleteImageInContainer(user.getProfilePictureUri());
             String filename = azureBlobService.uploadImageToBlob((String) updates.get("profile_picture_encoded_base64"));
             user.setProfilePictureUri(filename);
+        }
+
+        if (updates.containsKey("sms_code")) {
+            String apiKey = parqioService.getAPIKey(user.getNumber(), (String) updates.get("sms_code"));
+            user.setParqioAPIKey(apiKey);
         }
 
         userRepository.save(user);

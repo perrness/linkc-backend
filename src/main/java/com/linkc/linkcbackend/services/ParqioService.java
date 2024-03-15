@@ -1,6 +1,9 @@
 package com.linkc.linkcbackend.services;
 
 import com.linkc.linkcbackend.controllers.AuthenticationController;
+import com.linkc.linkcbackend.domain.ParkioAPIKeyResponse;
+import com.linkc.linkcbackend.domain.ParqioLoginRequest;
+import com.linkc.linkcbackend.domain.ParqioLoginResponse;
 import com.linkc.linkcbackend.domain.ParqioSmsRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,5 +35,23 @@ public class ParqioService {
                 .toBodilessEntity();
 
         logger.info(response.toString());
+    }
+
+    public String getAPIKey(String phone, String token) {
+        ParqioLoginRequest parqioLoginRequest = new ParqioLoginRequest(token, phone);
+        ParqioLoginResponse response = restClient.post()
+                .uri(uriBase + "/api/v1/auth/sms-token-login")
+                .body(parqioLoginRequest)
+                .retrieve()
+                .body(ParqioLoginResponse.class);
+
+        ParkioAPIKeyResponse parkioAPIKeyResponse = restClient.post()
+                .uri(uriBase + "/api/v1/auth/api-keys")
+                .header("authtoken", response.getData().authtoken)
+                .retrieve()
+                .body(ParkioAPIKeyResponse.class);
+
+
+        return parkioAPIKeyResponse.data.getApiKey();
     }
 }

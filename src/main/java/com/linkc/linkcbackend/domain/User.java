@@ -17,10 +17,13 @@ public class User implements UserDetails {
         private String firstname;
         private String lastname;
         private String password;
+        @Indexed(unique = true)
         private String email;
+        @Indexed(unique = true)
         private String number;
         private String profilePictureUri;
         private Role role;
+        private String parqioAPIKey;
 
         private User() {}
 
@@ -32,6 +35,7 @@ public class User implements UserDetails {
                 this.number = userBuilder.number;
                 this.profilePictureUri = userBuilder.profilePictureUri;
                 this.role = userBuilder.role;
+                this.parqioAPIKey = userBuilder.parqioAPIKey;
         }
 
         public String getId() {
@@ -121,6 +125,14 @@ public class User implements UserDetails {
                 return role;
         }
 
+        public void setParqioAPIKey(String parqioAPIKey) {
+                this.parqioAPIKey = parqioAPIKey;
+        }
+
+        public String getParqioAPIKey() {
+                return parqioAPIKey;
+        }
+
         public static class UserBuilder {
             private String firstname;
             private String lastname;
@@ -129,6 +141,7 @@ public class User implements UserDetails {
             private String number;
             private String profilePictureUri;
             private Role role;
+            private String parqioAPIKey;
 
             public UserBuilder firstname(String firstName) {
                     this.firstname = firstName;
@@ -162,6 +175,11 @@ public class User implements UserDetails {
 
             public UserBuilder role(Role role) {
                     this.role = role;
+                    return this;
+            }
+
+            public UserBuilder parqioAPIKey(String parqioAPIKey) {
+                    this.parqioAPIKey = parqioAPIKey;
                     return this;
             }
 
