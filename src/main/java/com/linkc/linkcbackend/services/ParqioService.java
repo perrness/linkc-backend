@@ -54,4 +54,8 @@ public class ParqioService {
 
         return parkioAPIKeyResponse.data.getApiKey();
     }
+
+    public void openBox() {
+        logger.info("Box opened");
+    }
 }

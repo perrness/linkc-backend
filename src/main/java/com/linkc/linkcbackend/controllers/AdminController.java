@@ -3,6 +3,7 @@ package com.linkc.linkcbackend.controllers;
 import com.linkc.linkcbackend.domain.*;
 import com.linkc.linkcbackend.repository.UserRepository;
 import com.linkc.linkcbackend.services.AuthenticationService;
+import com.linkc.linkcbackend.services.BoxService;
 import com.linkc.linkcbackend.services.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -25,11 +26,13 @@ public class AdminController {
     private final UserRepository userRepository;
     private final AuthenticationService authenticationService;
     private final UserService userService;
+    private final BoxService boxService;
 
-    public AdminController(UserRepository userRepository, AuthenticationService authenticationService, UserService userService) {
+    public AdminController(UserRepository userRepository, AuthenticationService authenticationService, UserService userService, BoxService boxService) {
         this.userRepository = userRepository;
         this.authenticationService = authenticationService;
         this.userService = userService;
+        this.boxService = boxService;
     }
 
     @GetMapping("/users")
@@ -122,5 +125,13 @@ public class AdminController {
             logger.error("Admin deleting user failed with: {}", exception.getMessage());
             return ResponseEntity.internalServerError().body("Something failed during deletion");
         }
+    }
+
+
+    @PostMapping("/boxes")
+    public ResponseEntity<?> createBox(@Valid @RequestBody Box request) {
+        boxService.createBox(request);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

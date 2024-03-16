@@ -1,12 +1,8 @@
 package com.linkc.linkcbackend.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-enum Status{
-    available,
-    unavailable
-}
 
 @Document("boxes")
 public class Box {
@@ -15,8 +11,19 @@ public class Box {
     private String name;
     private String location;
     private Status status;
+    @JsonProperty("reserved_by")
     private String reservedBy;
+    @JsonProperty("to_be_opened_by")
     private String toBeOpenedBy;
+    private String timeBooked;
+
+    public String getTimeBooked() {
+        return timeBooked;
+    }
+
+    public void setTimeBooked(String timeBooked) {
+        this.timeBooked = timeBooked;
+    }
 
     public String getId() {
         return id;
