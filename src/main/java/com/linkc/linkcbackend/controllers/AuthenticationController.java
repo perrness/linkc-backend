@@ -37,7 +37,7 @@ public class AuthenticationController {
             return ResponseEntity.ok(authenticationResponse);
         } catch (Exception exception) {
             logger.error("Register failed with: {}", exception.getMessage());
-            if (exception.getMessage().contains("E11000 duplicate key error collection: linkc.users. Failed _id or unique index constraint.")) {
+            if (exception.getMessage().contains("Duplicate key violation on the requested collection")) {
                 return ResponseEntity.badRequest().body(new Response("Email or number already in use."));
             }
             return ResponseEntity.internalServerError().body("Something failed during registration");
